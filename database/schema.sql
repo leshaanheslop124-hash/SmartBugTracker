@@ -1,0 +1,58 @@
+CREATE DATABASE SmartBugTrackerDB;
+USE SmartBugTrackerDB;
+
+CREATE TABLE Users (
+    UserID INT IDENTITY(1,1) PRIMARY KEY,
+    FirstName NVARCHAR(50) NOT NULL,
+    LastName NVARCHAR(50) NOT NULL,
+    Email NVARCHAR(100) NOT NULL UNIQUE,
+    PasswordHash NVARCHAR(255) NOT NULL,
+    CreatedAt DATETIME DEFAULT GETDATE()
+);
+
+
+CREATE TABLE Projects (
+    ProjectID INT IDENTITY(1,1) PRIMARY KEY,
+    ProjectName NVARCHAR(100) NOT NULL,
+    Description NVARCHAR(500),
+    UserID INT NOT NULL,
+    CreatedAt DATETIME DEFAULT GETDATE(),
+
+    CONSTRAINT FK_Projects_Users
+        FOREIGN KEY (UserID) REFERENCES Users(UserID)
+);
+
+
+
+CREATE TABLE Bugs (
+    BugID INT IDENTITY(1,1) PRIMARY KEY,
+    ProjectID INT NOT NULL,
+    UserID INT NOT NULL,
+    Title NVARCHAR(150) NOT NULL,
+    Description NVARCHAR(MAX) NOT NULL,
+    Severity NVARCHAR(20) NOT NULL,
+    Status NVARCHAR(20) NOT NULL DEFAULT 'Open',
+    Priority NVARCHAR(20) NOT NULL DEFAULT 'Medium',
+    DateReported DATETIME DEFAULT GETDATE(),
+
+    CONSTRAINT FK_Bugs_Projects
+        FOREIGN KEY (ProjectID) REFERENCES Projects(ProjectID),
+
+    CONSTRAINT FK_Bugs_Users
+        FOREIGN KEY (UserID) REFERENCES Users(UserID)
+);
+
+
+CREATE TABLE Comments (
+    CommentID INT IDENTITY(1,1) PRIMARY KEY,
+    BugID INT NOT NULL,
+    UserID INT NOT NULL,
+    CommentText NVARCHAR(MAX) NOT NULL,
+    CreatedAt DATETIME DEFAULT GETDATE(),
+
+    CONSTRAINT FK_Comments_Bugs
+        FOREIGN KEY (BugID) REFERENCES Bugs(BugID),
+
+    CONSTRAINT FK_Comments_Users
+        FOREIGN KEY (UserID) REFERENCES Users(UserID)
+);
