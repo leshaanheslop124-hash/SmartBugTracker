@@ -9,9 +9,7 @@
 
 </head>
 
-
 <body>
-
 
 <nav>
 
@@ -20,53 +18,44 @@
     <div>
 
         <a href="/">Home</a>
-
         <a href="/login">Login</a>
-
         <a href="/register">Register</a>
 
     </div>
 
 </nav>
 
-
-
 <div class="container">
 
+    <h1>Login</h1>
 
-<h1>Login</h1>
+    {% if error %}
+        <p>{{ error }}</p>
+    {% endif %}
 
+    <form method="POST">
 
-<form>
+        <label>Email:</label>
+        <br>
 
+        <input type="email" name="email" required>
 
-<label>Email:</label>
-<br>
+        <br><br>
 
-<input type="email">
+        <label>Password:</label>
+        <br>
 
-<br><br>
+        <input type="password" name="password" required>
 
+        <br><br>
 
-<label>Password:</label>
-<br>
+        <button type="submit">
+            Login
+        </button>
 
-<input type="password">
-
-
-<br><br>
-
-
-<button type="submit">
-Login
-</button>
-
-
-</form>
-
+    </form>
 
 </div>
-
 
 </body>
 

@@ -9,9 +9,7 @@
 
 </head>
 
-
 <body>
-
 
 <nav>
 
@@ -29,54 +27,51 @@
 
 </nav>
 
-
-
 <div class="container">
 
+    <h1>Create Account</h1>
 
-<h1>Create Account</h1>
+    {% if error %}
+        <p>{{ error }}</p>
+    {% endif %}
 
+    <form method="POST">
 
-<form>
+        <label>First Name:</label>
+        <br>
 
+        <input type="text" name="first_name" required>
 
-<label>Name:</label>
-<br>
+        <br><br>
 
-<input type="text">
+        <label>Last Name:</label>
+        <br>
 
+        <input type="text" name="last_name" required>
 
-<br><br>
+        <br><br>
 
+        <label>Email:</label>
+        <br>
 
-<label>Email:</label>
-<br>
+        <input type="email" name="email" required>
 
-<input type="email">
+        <br><br>
 
+        <label>Password:</label>
+        <br>
 
-<br><br>
+        <input type="password" name="password" required>
 
+        <br><br>
 
-<label>Password:</label>
-<br>
+        <button type="submit">
+            Register
+        </button>
 
-<input type="password">
-
-
-<br><br>
-
-
-<button type="submit">
-Register
-</button>
-
-
-</form>
-
+    </form>
 
 </div>
-
 
 </body>
 

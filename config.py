@@ -8,6 +8,7 @@ class Config:
     DB_SERVER = os.getenv("DB_SERVER")
     DB_NAME = os.getenv("DB_NAME")
     DB_DRIVER = os.getenv("DB_DRIVER")
+    SECRET_KEY = os.getenv("FLASK_SECRET_KEY")
 
     SQLALCHEMY_DATABASE_URI = (
         f"mssql+pyodbc://@{DB_SERVER}/{DB_NAME}"
