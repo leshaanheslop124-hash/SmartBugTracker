@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Create Bug - Smart Bug Tracker</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+</head>
+
+<body>
+
+<nav>
+
+    <h2>Smart Bug Tracker</h2>
+
+    <div>
+
+        <a href="/">Home</a>
+        <a href="/dashboard">Dashboard</a>
+
+    </div>
+
+</nav>
+
+
+<div class="container">
+
+    <h1>Create Bug Report</h1>
+
+    <form method="POST">
+
+        <label for="project_id">Project</label>
+
+        <select name="project_id" id="project_id" required>
+
+            <option value="">Select a project</option>
+
+            {% for project in projects %}
+
+                <option value="{{ project.ProjectID }}">
+                    {{ project.ProjectName }}
+                </option>
+
+            {% endfor %}
+
+        </select>
+
+
+        <br><br>
+
+
+        <label for="title">Bug Title</label>
+
+        <input
+            type="text"
+            name="title"
+            id="title"
+            maxlength="150"
+            required
+        >
+
+
+        <br><br>
+
+
+        <label for="description">Description</label>
+
+        <textarea
+            name="description"
+            id="description"
+            rows="6"
+            required
+        ></textarea>
+
+
+        <br><br>
+
+
+        <label for="severity">Severity</label>
+
+        <select name="severity" id="severity" required>
+
+            <option value="">Select severity</option>
+
+            <option value="Low">Low</option>
+
+            <option value="Medium">Medium</option>
+
+            <option value="High">High</option>
+
+            <option value="Critical">Critical</option>
+
+        </select>
+
+
+        <br><br>
+
+
+        <button type="submit">
+            Create Bug
+        </button>
+
+    </form>
+
+</div>
+
+</body>
+
+</html>
