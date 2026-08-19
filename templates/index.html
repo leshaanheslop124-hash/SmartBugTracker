@@ -1,17 +1,26 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
 
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Smart Bug Tracker</title>
 
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
 
 </head>
 
 
-<body>
+<body class="home-page">
 
+
+<!-- =========================
+     NAVIGATION
+========================= -->
 
 <nav>
 
@@ -19,46 +28,296 @@
 
     <div>
 
-        <a href="/">Home</a>
+        {% if session.get("user_id") %}
 
-        <a href="/login">Login</a>
+            <a href="/dashboard">Dashboard</a>
 
-        <a href="/register">Register</a>
-     
-        <a href="/dashboard">Dashboard</a>
+            <a href="/create_bug">Create Bug</a>
+
+            <a href="/logout">Logout</a>
+
+        {% else %}
+
+            <a href="/login">Login</a>
+
+            <a href="/register">Register</a>
+
+        {% endif %}
 
     </div>
 
 </nav>
 
 
+<!-- =========================
+     HERO SECTION
+========================= -->
 
-<div class="container">
+<section class="hero">
+
+    <div class="hero-overlay">
+
+        <div class="hero-content">
+
+            <span class="hero-label">
+                SOFTWARE DEVELOPMENT & BUG MANAGEMENT
+            </span>
+
+            <h1>
+                Smart Bug Tracker
+            </h1>
+
+            <p class="hero-subtitle">
+                Report, prioritize, manage and track software bugs
+                from one central platform.
+            </p>
 
 
-<h1>Smart Bug Tracker</h1>
+            <div class="hero-buttons">
+
+                {% if session.get("user_id") %}
+
+                    <a href="/create_bug" class="hero-button primary">
+                        Create Bug
+                    </a>
+
+                    <a href="/dashboard" class="hero-button secondary">
+                        View Dashboard
+                    </a>
+
+                {% else %}
+
+                    <a href="/login" class="hero-button primary">
+                        Create Bug
+                    </a>
+
+                    <a href="/login" class="hero-button secondary">
+                        View Dashboard
+                    </a>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
 
 
-<p>
-Report, manage and track software bugs easily.
-</p>
+<!-- =========================
+     ABOUT SECTION
+========================= -->
+
+<section class="about-section">
+
+    <div class="section-heading">
+
+        <span>ABOUT THE APPLICATION</span>
+
+        <h2>
+            A smarter way to manage software bugs
+        </h2>
+
+        <p>
+            Smart Bug Tracker is a web-based application designed
+            to help software developers and project teams report,
+            organize, prioritize and monitor software issues
+            throughout the development process.
+        </p>
+
+    </div>
 
 
-
-<a href="/create_bug">
-    <button type="button">
-        Create Bug
-    </button>
-</a>
+    <div class="feature-grid">
 
 
-<a href="/dashboard">
-<button>
-View Dashboard
-</button>
-</a>
+        <div class="feature-card">
 
-</div>
+            <div class="feature-icon">
+                🐛
+            </div>
+
+            <h3>
+                Bug Management
+            </h3>
+
+            <p>
+                Create and manage detailed bug reports including
+                descriptions, severity levels, status and project
+                information.
+            </p>
+
+        </div>
+
+
+        <div class="feature-card">
+
+            <div class="feature-icon">
+                🧠
+            </div>
+
+            <h3>
+                Smart Priority
+            </h3>
+
+            <p>
+                The system analyses bug severity and descriptions
+                to recommend which issues should receive attention
+                first.
+            </p>
+
+        </div>
+
+
+        <div class="feature-card">
+
+            <div class="feature-icon">
+                📊
+            </div>
+
+            <h3>
+                Dashboard Analytics
+            </h3>
+
+            <p>
+                Monitor total, open, resolved and high-priority
+                bugs through a central dashboard.
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     HOW IT WORKS
+========================= -->
+
+<section class="how-section">
+
+    <div class="section-heading">
+
+        <span>HOW IT WORKS</span>
+
+        <h2>
+            Track issues from report to resolution
+        </h2>
+
+    </div>
+
+
+    <div class="steps">
+
+
+        <div class="step">
+
+            <div class="step-number">
+                01
+            </div>
+
+            <h3>
+                Report
+            </h3>
+
+            <p>
+                Create a detailed bug report and select its
+                severity.
+            </p>
+
+        </div>
+
+
+        <div class="step">
+
+            <div class="step-number">
+                02
+            </div>
+
+            <h3>
+                Prioritize
+            </h3>
+
+            <p>
+                Smart priority recommendations help identify
+                important issues.
+            </p>
+
+        </div>
+
+
+        <div class="step">
+
+            <div class="step-number">
+                03
+            </div>
+
+            <h3>
+                Resolve
+            </h3>
+
+            <p>
+                Track the bug as your development team works
+                towards resolution.
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     OWNER / DEVELOPER
+========================= -->
+
+<section class="developer-section">
+
+    <div class="developer-card">
+
+        <span>
+            DEVELOPED BY
+        </span>
+
+        <h2>
+            Leshaan Heslop
+        </h2>
+
+        <p>
+            Developer & Creator of Smart Bug Tracker
+        </p>
+
+        <p class="developer-description">
+            Smart Bug Tracker was developed as a software
+            engineering project to explore practical bug
+            management, database development, web technologies
+            and intelligent prioritization.
+        </p>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     FOOTER
+========================= -->
+
+<footer>
+
+    <p>
+        © 2026 Smart Bug Tracker
+    </p>
+
+    <p>
+        Software Engineering Project
+    </p>
+
+</footer>
 
 
 </body>

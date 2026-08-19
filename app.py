@@ -21,7 +21,6 @@ db.init_app(app)
 # =========================
 # HOME
 # =========================
-
 @app.route("/")
 def home():
     return render_template("index.html")
@@ -30,7 +29,6 @@ def home():
 # =========================
 # LOGIN
 # =========================
-
 @app.route("/login", methods=["GET", "POST"])
 def login():
 
@@ -56,6 +54,16 @@ def login():
     return render_template("login.html")
 
 
+# =========================
+# LOGOUT
+# =========================
+
+@app.route("/logout")
+def logout():
+
+    session.clear()
+
+    return redirect(url_for("home"))
 # =========================
 # REGISTER
 # =========================
