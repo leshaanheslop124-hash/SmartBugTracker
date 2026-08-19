@@ -9,9 +9,7 @@
 
 </head>
 
-
 <body>
-
 
 <nav>
 
@@ -21,77 +19,116 @@
 
         <a href="/">Home</a>
 
-        <a href="/login">Login</a>
-
-        <a href="/register">Register</a>
-
-        <a href="/dashboard">Dashboard</a>
-
         <a href="/create_bug">
-    <button type="button">
-        Create Bug
-    </button>
-</a>
+            <button type="button">Create Bug</button>
+        </a>
 
     </div>
 
 </nav>
 
 
-
 <div class="container">
 
-
-<h1>Bug Dashboard</h1>
-
-
-<div class="cards">
+    <h1>Bug Dashboard</h1>
 
 
-<div class="card">
+    <!-- =========================
+         DASHBOARD STATISTICS
+    ========================== -->
 
-<h2>0</h2>
+    <div class="cards">
 
-<p>Total Bugs</p>
+        <div class="card">
+
+            <h2>{{ total_bugs }}</h2>
+
+            <p>Total Bugs</p>
+
+        </div>
+
+
+        <div class="card">
+
+            <h2>{{ open_bugs }}</h2>
+
+            <p>Open Bugs</p>
+
+        </div>
+
+
+        <div class="card">
+
+            <h2>{{ resolved_bugs }}</h2>
+
+            <p>Resolved Bugs</p>
+
+        </div>
+
+
+        <div class="card">
+
+            <h2>{{ high_priority }}</h2>
+
+            <p>High Priority</p>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================
+         BUG LIST
+    ========================== -->
+
+    <h2>My Bugs</h2>
+
+
+    {% if bugs %}
+
+        {% for bug in bugs %}
+
+            <div class="card">
+
+                <h3>{{ bug.Title }}</h3>
+
+                <p>
+                    <strong>Description:</strong>
+                    {{ bug.Description }}
+                </p>
+
+                <p>
+                    <strong>Severity:</strong>
+                    {{ bug.Severity }}
+                </p>
+
+                <p>
+                    <strong>Priority:</strong>
+                    {{ bug.Priority }}
+                </p>
+
+                <p>
+                    <strong>Status:</strong>
+                    {{ bug.Status }}
+                </p>
+
+                <p>
+                    <strong>Date Reported:</strong>
+                    {{ bug.DateReported }}
+                </p>
+
+            </div>
+
+        {% endfor %}
+
+    {% else %}
+
+        <p>You have not reported any bugs yet.</p>
+
+    {% endif %}
+
 
 </div>
-
-
-
-<div class="card">
-
-<h2>0</h2>
-
-<p>Open Bugs</p>
-
-</div>
-
-
-
-<div class="card">
-
-<h2>0</h2>
-
-<p>Resolved Bugs</p>
-
-</div>
-
-
-
-<div class="card">
-
-<h2>0</h2>
-
-<p>High Priority</p>
-
-</div>
-
-
-</div>
-
-
-</div>
-
 
 </body>
 
