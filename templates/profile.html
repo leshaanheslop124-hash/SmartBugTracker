@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>My Profile - Smart Bug Tracker</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+
+</head>
+
+<body>
+
+<nav>
+
+    <h2>Smart Bug Tracker</h2>
+
+    <div>
+
+        <a href="/">Home</a>
+
+        {% if user.Role == "Admin" %}
+
+            <a href="/admin">Admin Panel</a>
+
+        {% else %}
+
+            <a href="/dashboard">Dashboard</a>
+
+        {% endif %}
+
+        <a href="/create_bug">Create Bug</a>
+
+        <a href="/logout">Logout</a>
+
+    </div>
+
+</nav>
+
+
+<div class="container">
+
+    <h1>My Profile</h1>
+
+    <p>
+        Manage your Smart Bug Tracker account information.
+    </p>
+
+
+    <div class="profile-card">
+
+        <h2>
+            {{ user.FirstName }} {{ user.LastName }}
+        </h2>
+
+
+        <div class="profile-details">
+
+            <p>
+                <strong>First Name:</strong>
+                {{ user.FirstName }}
+            </p>
+
+            <p>
+                <strong>Last Name:</strong>
+                {{ user.LastName }}
+            </p>
+
+            <p>
+                <strong>Email:</strong>
+                {{ user.Email }}
+            </p>
+
+            <p>
+                <strong>Role:</strong>
+                {{ user.Role }}
+            </p>
+
+            <p>
+                <strong>Registered:</strong>
+
+                {% if user.CreatedAt %}
+                    {{ user.CreatedAt.strftime('%d %B %Y') }}
+                {% else %}
+                    Unknown
+                {% endif %}
+
+            </p>
+
+            <p>
+                <strong>Account Status:</strong>
+
+                {% if user.IsActive %}
+                    Active
+                {% else %}
+                    Disabled
+                {% endif %}
+
+            </p>
+
+        </div>
+
+
+        <div class="profile-actions">
+
+            <a href="/profile/edit" class="hero-button primary">
+                  Edit Profile
+                    </a>
+
+           <a href="/profile/change-password" class="hero-button primary">
+                  Change Password
+                    </a>
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+
+</html>     
