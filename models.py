@@ -9,6 +9,8 @@ class User(db.Model):
     LastName = db.Column(db.String(50), nullable=False)
     Email = db.Column(db.String(100), unique=True, nullable=False)
     PasswordHash = db.Column(db.String(255), nullable=False)
+    Role = db.Column(db.String(20), nullable=False, default="Employee")
+    IsActive = db.Column(db.Boolean, nullable=False, default=True)
     CreatedAt = db.Column(db.DateTime, default=db.func.now())
 
     projects = db.relationship("Project", backref="user", lazy=True)

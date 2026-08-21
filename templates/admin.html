@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Admin Dashboard - Smart Bug Tracker</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+
+</head>
+
+<body>
+
+<nav>
+
+    <h2>Smart Bug Tracker</h2>
+
+    <div>
+
+        <a href="/">Home</a>
+
+        <a href="/create_bug">Create Bug</a>
+
+        <a href="/logout">Logout</a>
+
+    </div>
+
+</nav>
+
+
+<div class="container">
+
+    <h1>Administrator Dashboard</h1>
+
+    <p>
+        Welcome, {{ session.get("user_name") }}.
+    </p>
+
+
+    <!-- =========================
+         ADMIN STATISTICS
+    ========================== -->
+
+    <div class="cards">
+
+        <div class="card">
+
+            <h2>{{ total_users }}</h2>
+
+            <p>Total Users</p>
+
+        </div>
+
+
+        <div class="card">
+
+            <h2>{{ total_employees }}</h2>
+
+            <p>Employees</p>
+
+        </div>
+
+
+        <div class="card">
+
+            <h2>{{ total_admins }}</h2>
+
+            <p>Administrators</p>
+
+        </div>
+
+
+        <div class="card">
+
+            <h2>{{ active_users }}</h2>
+
+            <p>Active Accounts</p>
+
+        </div>
+
+
+        <div class="card">
+
+            <h2>{{ disabled_users }}</h2>
+
+            <p>Disabled Accounts</p>
+
+        </div>
+
+    </div>
+<!-- =========================
+     ADMINISTRATORS
+========================= -->
+
+<h2 class="admin-section-title">
+    Administrators
+</h2>
+
+
+<div class="admin-user-list">
+
+    {% for user in admins %}
+
+        <div class="admin-user-card">
+
+            <div class="admin-user-info">
+
+                <h3>
+                    {{ user.FirstName }} {{ user.LastName }}
+                </h3>
+
+                <p>
+                    <strong>Email:</strong>
+                    {{ user.Email }}
+                </p>
+
+                <p>
+                    <strong>Role:</strong>
+                    {{ user.Role }}
+                </p>
+
+                <p>
+                    <strong>Registered:</strong>
+                    {{ user.CreatedAt.strftime('%d %B %Y') if user.CreatedAt else 'Unknown' }}
+                </p>
+
+                <p>
+                    <strong>Account age:</strong>
+
+                    {% if user.CreatedAt %}
+                        {{ (current_date - user.CreatedAt).days }} days
+                    {% else %}
+                        Unknown
+                    {% endif %}
+
+                </p>
+
+                <p>
+                    <strong>Status:</strong>
+
+                    {% if user.IsActive %}
+                        Active
+                    {% else %}
+                        Disabled
+                    {% endif %}
+
+                </p>
+
+            </div>
+
+
+            <div class="admin-user-actions">
+
+                {% if user.UserID != session.get("user_id") %}
+
+                    <div class="admin-action-group">
+
+                        <form
+                            method="POST"
+                            action="{{ url_for('change_role', user_id=user.UserID) }}"
+                        >
+
+                            <button type="submit">
+                                Demote to Employee
+                            </button>
+
+                        </form>
+
+
+                        <form
+                            method="POST"
+                            action="{{ url_for('toggle_user_status', user_id=user.UserID) }}"
+                        >
+
+                            <button
+                                type="submit"
+                                class="disable-button"
+                            >
+
+                                {% if user.IsActive %}
+                                    Disable Access
+                                {% else %}
+                                    Restore Access
+                                {% endif %}
+
+                            </button>
+
+                        </form>
+
+                    </div>
+
+                {% else %}
+
+                    <span class="current-user">
+                        Current Admin
+                    </span>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+    {% else %}
+
+        <p>No administrators found.</p>
+
+    {% endfor %}
+
+</div>
+
+
+<!-- =========================
+     EMPLOYEES
+========================= -->
+
+<h2 class="admin-section-title">
+    Employees
+</h2>
+
+
+<div class="admin-user-list">
+
+    {% for user in employees %}
+
+        <div class="admin-user-card">
+
+            <div class="admin-user-info">
+
+                <h3>
+                    {{ user.FirstName }} {{ user.LastName }}
+                </h3>
+
+                <p>
+                    <strong>Email:</strong>
+                    {{ user.Email }}
+                </p>
+
+                <p>
+                    <strong>Role:</strong>
+                    {{ user.Role }}
+                </p>
+
+                <p>
+                    <strong>Registered:</strong>
+                    {{ user.CreatedAt.strftime('%d %B %Y') if user.CreatedAt else 'Unknown' }}
+                </p>
+
+                <p>
+                    <strong>Account age:</strong>
+
+                    {% if user.CreatedAt %}
+                        {{ (current_date - user.CreatedAt).days }} days
+                    {% else %}
+                        Unknown
+                    {% endif %}
+
+                </p>
+
+                <p>
+                    <strong>Status:</strong>
+
+                    {% if user.IsActive %}
+                        Active
+                    {% else %}
+                        Disabled
+                    {% endif %}
+
+                </p>
+
+            </div>
+
+
+            <div class="admin-user-actions">
+
+                <div class="admin-action-group">
+
+                    <form
+                        method="POST"
+                        action="{{ url_for('change_role', user_id=user.UserID) }}"
+                    >
+
+                        <button type="submit">
+                            Promote to Admin
+                        </button>
+
+                    </form>
+
+
+                    <form
+                        method="POST"
+                        action="{{ url_for('toggle_user_status', user_id=user.UserID) }}"
+                    >
+
+                        <button
+                            type="submit"
+                            class="disable-button"
+                        >
+
+                            {% if user.IsActive %}
+                                Disable Access
+                            {% else %}
+                                Restore Access
+                            {% endif %}
+
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    {% else %}
+
+        <p>No employees found.</p>
+
+    {% endfor %}
+
+</div>

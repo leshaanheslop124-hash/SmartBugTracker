@@ -863,3 +863,200 @@ footer p {
     }
 
 }
+/* =========================
+   ADMIN DASHBOARD
+========================= */
+
+.admin-section-title {
+    margin-top: 50px;
+    margin-bottom: 20px;
+    color: #1f2937;
+}
+
+
+/* =========================
+   USER LIST
+========================= */
+
+.admin-user-list {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+
+/* =========================
+   USER CARD
+========================= */
+
+.admin-user-card {
+    background: white;
+
+    border: 1px solid #e5e7eb;
+
+    border-radius: 12px;
+
+    padding: 25px;
+
+    min-height: 190px;
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    gap: 25px;
+
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.06);
+}
+
+
+/* =========================
+   USER INFORMATION
+========================= */
+
+.admin-user-info {
+    flex: 1;
+}
+
+.admin-user-info h3 {
+    margin-top: 0;
+    margin-bottom: 12px;
+
+    color: #1f4e79;
+}
+
+.admin-user-info p {
+    margin: 6px 0;
+
+    color: #6b7280;
+}
+
+.admin-user-info strong {
+    color: #374151;
+}
+
+
+/* =========================
+   ACTION AREA
+========================= */
+
+.admin-user-actions {
+    width: 300px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+/* =========================
+   ACTION BUTTONS
+========================= */
+
+.admin-action-group {
+    display: flex;
+
+    gap: 12px;
+
+    width: 100%;
+}
+
+
+.admin-action-group form {
+    flex: 1;
+
+    width: auto;
+    max-width: none;
+
+    margin: 0;
+    padding: 0;
+
+    background: transparent;
+
+    border: none;
+
+    box-shadow: none;
+}
+
+
+.admin-action-group button {
+    width: 100%;
+
+    min-height: 48px;
+
+    white-space: nowrap;
+}
+
+
+/* =========================
+   DISABLE BUTTON
+========================= */
+
+.disable-button {
+    flex: 1;
+
+    background: #dc2626;
+
+    min-height: 48px;
+
+    white-space: nowrap;
+}
+
+.disable-button:hover {
+    background: #b91c1c;
+}
+
+
+/* =========================
+   CURRENT ADMIN
+========================= */
+
+.current-user {
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    width: 100%;
+
+    min-height: 48px;
+
+    padding: 10px 14px;
+
+    border-radius: 7px;
+
+    background: #eaf2f9;
+
+    color: #1f4e79;
+
+    font-weight: bold;
+
+    text-align: center;
+}
+
+
+/* =========================
+   ADMIN RESPONSIVE DESIGN
+========================= */
+
+@media (max-width: 700px) {
+
+    .admin-user-card {
+        flex-direction: column;
+
+        align-items: stretch;
+
+        min-height: auto;
+    }
+
+    .admin-user-actions {
+        width: 100%;
+    }
+
+    .admin-action-group {
+        flex-direction: column;
+    }
+
+}
