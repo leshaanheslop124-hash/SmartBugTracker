@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>All Bugs - Smart Bug Tracker</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+
+</head>
+
+
+<body>
+
+<nav>
+
+    <h2>Smart Bug Tracker</h2>
+<div>
+
+    {% if request.path != "/" %}
+        <a href="/">Home</a>
+    {% endif %}
+
+    {% if request.path != "/admin" %}
+        <a href="/admin">Admin Dashboard</a>
+    {% endif %}
+
+    {% if request.path != "/admin/bugs" %}
+        <a href="/admin/bugs">All Bugs</a>
+    {% endif %}
+
+    {% if request.path != "/create_bug" %}
+        <a href="/create_bug">Create Bug</a>
+    {% endif %}
+
+    {% if request.path != "/profile" %}
+        <a href="/profile">Profile</a>
+    {% endif %}
+
+    <a href="/logout">Logout</a>
+
+</div>
+
+</nav>
+
+
+<div class="container">
+
+    <h1>All Reported Bugs</h1>
+
+    <p>
+        Administrator view of all bugs reported in the system.
+    </p>
+
+
+    {% if bugs %}
+
+        {% for bug in bugs %}
+
+            <div class="card">
+
+                <h3>
+                    {{ bug.Title }}
+                </h3>
+
+
+                <p>
+                    <strong>Bug ID:</strong>
+                    {{ bug.BugID }}
+                </p>
+
+
+                <p>
+                    <strong>Description:</strong>
+                    {{ bug.Description }}
+                </p>
+
+
+                <p>
+                    <strong>Severity:</strong>
+                    {{ bug.Severity }}
+                </p>
+
+
+                <p>
+                    <strong>Priority:</strong>
+                    {{ bug.Priority }}
+                </p>
+
+
+                <p>
+                    <strong>Status:</strong>
+                    {{ bug.Status }}
+                </p>
+
+
+                <p>
+                    <strong>Reported:</strong>
+                    {{ bug.DateReported }}
+                </p>
+
+
+                <p>
+                    <strong>Reported By:</strong>
+
+                    {{ bug.user.FirstName }}
+                    {{ bug.user.LastName }}
+
+                    —
+                    {{ bug.user.Email }}
+
+                </p>
+
+
+                <p>
+                    <strong>Project:</strong>
+
+                    {% if bug.project %}
+                        {{ bug.project.ProjectName }}
+                    {% else %}
+                        No project
+                    {% endif %}
+
+                </p>
+
+            </div>
+
+        {% endfor %}
+
+    {% else %}
+
+        <p>
+            There are currently no bugs in the system.
+        </p>
+
+    {% endif %}
+
+</div>
+
+
+</body>
+
+</html>

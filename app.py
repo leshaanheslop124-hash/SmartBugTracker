@@ -31,12 +31,15 @@ def admin_required():
 
     return None
 
+
 # =========================
 # HOME
 # =========================
+
 @app.route("/")
 def home():
     return render_template("index.html")
+
 
 # =========================
 # LOGIN
@@ -72,6 +75,8 @@ def login():
         )
 
     return render_template("login.html")
+
+
 # =========================
 # LOGOUT
 # =========================
@@ -82,6 +87,8 @@ def logout():
     session.clear()
 
     return redirect(url_for("home"))
+
+
 # =========================
 # REGISTER
 # =========================
@@ -96,7 +103,9 @@ def register():
         email = request.form["email"]
         password = request.form["password"]
 
-        existing_user = User.query.filter_by(Email=email).first()
+        existing_user = User.query.filter_by(
+            Email=email
+        ).first()
 
         if existing_user:
 
@@ -137,7 +146,13 @@ def dashboard():
 
     user_id = session["user_id"]
 
-    total_bugs = Bug.query.filter_by(UserID=user_id).count()
+    # -------------------------
+    # BUG STATISTICS
+    # -------------------------
+
+    total_bugs = Bug.query.filter_by(
+        UserID=user_id
+    ).count()
 
     open_bugs = Bug.query.filter_by(
         UserID=user_id,
@@ -154,9 +169,17 @@ def dashboard():
         Priority="High"
     ).count()
 
-    projects = Project.query.filter_by(
-        UserID=user_id
-    ).all()
+    # -------------------------
+    # SHARED PROJECTS
+    # -------------------------
+    # Projects are shared between employees,
+    # so all logged-in employees can see them.
+
+    projects = Project.query.all()
+
+    # -------------------------
+    # USER'S OWN BUGS
+    # -------------------------
 
     bugs = Bug.query.filter_by(
         UserID=user_id
@@ -173,6 +196,144 @@ def dashboard():
         projects=projects,
         bugs=bugs
     )
+
+
+# =========================
+# PROFILE
+# =========================
+
+@app.route("/profile")
+def profile():
+
+    if "user_id" not in session:
+        return redirect(url_for("login"))
+
+    user = User.query.get_or_404(
+        session["user_id"]
+    )
+
+    return render_template(
+        "profile.html",
+        user=user
+    )
+
+
+# =========================
+# EDIT PROFILE
+# =========================
+
+@app.route("/profile/edit", methods=["GET", "POST"])
+def edit_profile():
+
+    if "user_id" not in session:
+        return redirect(url_for("login"))
+
+    user = User.query.get_or_404(
+        session["user_id"]
+    )
+
+    if request.method == "POST":
+
+        first_name = request.form["first_name"].strip()
+        last_name = request.form["last_name"].strip()
+        email = request.form["email"].strip()
+
+        existing_user = User.query.filter(
+            User.Email == email,
+            User.UserID != user.UserID
+        ).first()
+
+        if existing_user:
+
+            return render_template(
+                "edit_profile.html",
+                user=user,
+                error="That email address is already being used by another account."
+            )
+
+        user.FirstName = first_name
+        user.LastName = last_name
+        user.Email = email
+
+        db.session.commit()
+
+        session["user_name"] = user.FirstName
+
+        return redirect(url_for("profile"))
+
+    return render_template(
+        "edit_profile.html",
+        user=user
+    )
+
+
+# =========================
+# CHANGE PASSWORD
+# =========================
+
+@app.route("/profile/change-password", methods=["GET", "POST"])
+def change_password():
+
+    if "user_id" not in session:
+        return redirect(url_for("login"))
+
+    user = User.query.get_or_404(
+        session["user_id"]
+    )
+
+    if request.method == "POST":
+
+        current_password = request.form["current_password"]
+        new_password = request.form["new_password"]
+        confirm_password = request.form["confirm_password"]
+
+        # Check current password
+        if not check_password_hash(
+            user.PasswordHash,
+            current_password
+        ):
+
+            return render_template(
+                "change_password.html",
+                user=user,
+                error="Your current password is incorrect."
+            )
+
+        # Check that new passwords match
+        if new_password != confirm_password:
+
+            return render_template(
+                "change_password.html",
+                user=user,
+                error="The new passwords do not match."
+            )
+
+        # Prevent reusing the same password
+        if check_password_hash(
+            user.PasswordHash,
+            new_password
+        ):
+
+            return render_template(
+                "change_password.html",
+                user=user,
+                error="Your new password must be different from your current password."
+            )
+
+        user.PasswordHash = generate_password_hash(
+            new_password
+        )
+
+        db.session.commit()
+
+        return redirect(url_for("profile"))
+
+    return render_template(
+        "change_password.html",
+        user=user
+    )
+
+
 # =========================
 # ADMIN
 # =========================
@@ -228,6 +389,30 @@ def admin():
         employees=employees,
         current_date=datetime.now()
     )
+
+
+# =========================
+# ADMIN BUG MANAGEMENT
+# =========================
+
+@app.route("/admin/bugs")
+def admin_bugs():
+
+    access_check = admin_required()
+
+    if access_check:
+        return access_check
+
+    bugs = Bug.query.order_by(
+        Bug.DateReported.desc()
+    ).all()
+
+    return render_template(
+        "admin_bugs.html",
+        bugs=bugs
+    )
+
+
 # =========================
 # CHANGE USER ROLE
 # =========================
@@ -285,6 +470,7 @@ def toggle_user_status(user_id):
 
     return redirect(url_for("admin"))
 
+
 # =========================
 # CREATE BUG
 # =========================
@@ -297,15 +483,19 @@ def create_bug():
 
     user_id = session["user_id"]
 
-    projects = Project.query.filter_by(
-        UserID=user_id
-    ).all()
+    # =========================
+    # SHARED PROJECTS
+    # =========================
+    # All employees can report
+    # bugs against available projects.
+
+    projects = Project.query.all()
 
     if request.method == "POST":
 
         project_id = request.form["project_id"]
-        title = request.form["title"]
-        description = request.form["description"]
+        title = request.form["title"].strip()
+        description = request.form["description"].strip()
         severity = request.form["severity"]
 
         # =========================
@@ -315,9 +505,11 @@ def create_bug():
         description_lower = description.lower()
 
         if severity == "Critical":
+
             priority = "Critical"
 
         elif severity == "High":
+
             priority = "High"
 
         elif severity == "Medium":
@@ -333,12 +525,17 @@ def create_bug():
                 "login"
             ]
 
-            if any(word in description_lower for word in important_words):
+            if any(
+                word in description_lower
+                for word in important_words
+            ):
                 priority = "High"
+
             else:
                 priority = "Medium"
 
         else:
+
             priority = "Low"
 
         # =========================
@@ -358,11 +555,133 @@ def create_bug():
         db.session.add(new_bug)
         db.session.commit()
 
-        return redirect(url_for("dashboard"))
+        return redirect(
+            url_for("dashboard")
+        )
 
     return render_template(
         "create_bug.html",
         projects=projects
+    )
+
+
+# =========================
+# EDIT BUG
+# =========================
+
+@app.route("/edit_bug/<int:bug_id>", methods=["GET", "POST"])
+def edit_bug(bug_id):
+
+    if "user_id" not in session:
+        return redirect(url_for("login"))
+
+    user_id = session["user_id"]
+
+    # Users can only edit their own bugs
+    bug = Bug.query.filter_by(
+        BugID=bug_id,
+        UserID=user_id
+    ).first_or_404()
+
+    # All employees can select from shared projects
+    projects = Project.query.all()
+
+    if request.method == "POST":
+
+        project_id = request.form["project_id"]
+        title = request.form["title"].strip()
+        description = request.form["description"].strip()
+        severity = request.form["severity"]
+        status = request.form["status"]
+
+        # =========================
+        # SMART PRIORITY SYSTEM
+        # =========================
+
+        description_lower = description.lower()
+
+        if severity == "Critical":
+
+            priority = "Critical"
+
+        elif severity == "High":
+
+            priority = "High"
+
+        elif severity == "Medium":
+
+            important_words = [
+                "crash",
+                "crashes",
+                "error",
+                "failure",
+                "failed",
+                "broken",
+                "security",
+                "login"
+            ]
+
+            if any(
+                word in description_lower
+                for word in important_words
+            ):
+                priority = "High"
+
+            else:
+                priority = "Medium"
+
+        else:
+
+            priority = "Low"
+
+        # =========================
+        # UPDATE BUG
+        # =========================
+
+        bug.ProjectID = project_id
+        bug.Title = title
+        bug.Description = description
+        bug.Severity = severity
+        bug.Status = status
+        bug.Priority = priority
+
+        db.session.commit()
+
+        return redirect(
+            url_for("dashboard")
+        )
+
+    return render_template(
+        "edit_bug.html",
+        bug=bug,
+        projects=projects
+    )
+
+
+# =========================
+# DELETE BUG
+# =========================
+
+@app.route("/delete_bug/<int:bug_id>", methods=["POST"])
+def delete_bug(bug_id):
+
+    if "user_id" not in session:
+        return redirect(url_for("login"))
+
+    user_id = session["user_id"]
+
+    # Users can only delete their own bugs
+    bug = Bug.query.filter_by(
+        BugID=bug_id,
+        UserID=user_id
+    ).first_or_404()
+
+    db.session.delete(bug)
+
+    db.session.commit()
+
+    return redirect(
+        url_for("dashboard")
     )
 
 

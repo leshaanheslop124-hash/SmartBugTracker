@@ -22,22 +22,33 @@
 
     <div>
 
-        <a href="/">Home</a>
-
-        {% if user.Role == "Admin" %}
-
-            <a href="/admin">Admin Panel</a>
-
-        {% else %}
-
-            <a href="/dashboard">Dashboard</a>
-
+        {% if request.path != "/" %}
+            <a href="/">Home</a>
         {% endif %}
 
-        <a href="/create_bug">Create Bug</a>
+        {% if request.path != "/dashboard" %}
+            <a href="/dashboard">Dashboard</a>
+        {% endif %}
+
+
+        {% if session.get("user_role") == "Admin" and request.path != "/admin" %}
+            <a href="/admin">Admin Panel</a>
+        {% endif %}
+
+
+        {% if request.path != "/create_bug" %}
+            <a href="/create_bug">Create Bug</a>
+        {% endif %}
+
+
+        {% if session.get("user_role") == "Admin" and request.path != "/admin/bugs" %}
+            <a href="/admin/bugs">All Bugs</a>
+        {% endif %}
+
 
         <a href="/logout">Logout</a>
 
+    
     </div>
 
 </nav>

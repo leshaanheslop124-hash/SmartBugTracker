@@ -1060,3 +1060,91 @@ footer p {
     }
 
 }
+/* =========================
+   BUG ACTIONS
+========================= */
+
+.bug-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 18px;
+    align-items: stretch;
+}
+
+
+.bug-edit-button,
+.bug-delete-button {
+    flex: 1;
+
+    min-height: 46px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 11px 18px;
+
+    border-radius: 7px;
+
+    font-size: 15px;
+    font-weight: 500;
+
+    text-decoration: none;
+
+    cursor: pointer;
+
+    transition: 0.2s;
+}
+
+
+.bug-edit-button {
+    background: #1f4e79;
+    color: white;
+}
+
+
+.bug-edit-button:hover {
+    background: #163a5c;
+    transform: translateY(-1px);
+}
+
+
+.bug-delete-button {
+    background: #dc2626;
+    color: white;
+
+    border: none;
+}
+
+
+.bug-delete-button:hover {
+    background: #b91c1c;
+    transform: translateY(-1px);
+}
+
+
+.bug-actions form {
+    flex: 1;
+
+    width: auto;
+    max-width: none;
+
+    margin: 0;
+    padding: 0;
+
+    background: transparent;
+
+    border: none;
+
+    box-shadow: none;
+}
+
+
+@media (max-width: 500px) {
+
+    .bug-actions {
+        flex-direction: column;
+    }
+
+}

@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Edit Bug - Smart Bug Tracker</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+
+</head>
+
+<body>
+
+<nav>
+
+    <h2>Smart Bug Tracker</h2>
+
+    <div>
+
+        <a href="/">Home</a>
+
+        <a href="/dashboard">Dashboard</a>
+
+        <a href="/profile">Profile</a>
+
+        <a href="/logout">Logout</a>
+
+    </div>
+
+</nav>
+
+
+<div class="container">
+
+    <h1>Edit Bug Report</h1>
+
+
+    <form method="POST">
+
+        <!-- =========================
+             PROJECT
+        ========================== -->
+
+        <label for="project_id">
+            Project
+        </label>
+
+        <select
+            name="project_id"
+            id="project_id"
+            required
+        >
+
+            {% for project in projects %}
+
+                <option
+                    value="{{ project.ProjectID }}"
+                    {% if project.ProjectID == bug.ProjectID %}
+                        selected
+                    {% endif %}
+                >
+                    {{ project.ProjectName }}
+                </option>
+
+            {% endfor %}
+
+        </select>
+
+
+        <!-- =========================
+             BUG TITLE
+        ========================== -->
+
+        <label for="title">
+            Bug Title
+        </label>
+
+        <input
+            type="text"
+            name="title"
+            id="title"
+            maxlength="150"
+            value="{{ bug.Title }}"
+            required
+        >
+
+
+        <!-- =========================
+             DESCRIPTION
+        ========================== -->
+
+        <label for="description">
+            Description
+        </label>
+
+        <textarea
+            name="description"
+            id="description"
+            rows="6"
+            required
+        >{{ bug.Description }}</textarea>
+
+
+        <!-- =========================
+             SEVERITY
+        ========================== -->
+
+        <label for="severity">
+            Severity
+        </label>
+
+        <select
+            name="severity"
+            id="severity"
+            required
+        >
+
+            <option value="Low"
+                {% if bug.Severity == "Low" %}selected{% endif %}>
+                Low
+            </option>
+
+            <option value="Medium"
+                {% if bug.Severity == "Medium" %}selected{% endif %}>
+                Medium
+            </option>
+
+            <option value="High"
+                {% if bug.Severity == "High" %}selected{% endif %}>
+                High
+            </option>
+
+            <option value="Critical"
+                {% if bug.Severity == "Critical" %}selected{% endif %}>
+                Critical
+            </option>
+
+        </select>
+
+
+        <!-- =========================
+             BUG STATUS
+        ========================== -->
+
+        <label for="status">
+            Status
+        </label>
+
+        <select
+            name="status"
+            id="status"
+            required
+        >
+
+            <option value="Open"
+                {% if bug.Status == "Open" %}selected{% endif %}>
+                Open
+            </option>
+
+            <option value="In Progress"
+                {% if bug.Status == "In Progress" %}selected{% endif %}>
+                In Progress
+            </option>
+
+            <option value="Resolved"
+                {% if bug.Status == "Resolved" %}selected{% endif %}>
+                Resolved
+            </option>
+
+        </select>
+
+
+        <!-- =========================
+             SAVE
+        ========================== -->
+
+        <button type="submit">
+            Save Changes
+        </button>
+
+    </form>
+
+</div>
+
+</body>
+
+</html>

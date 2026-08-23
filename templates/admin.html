@@ -18,17 +18,34 @@
 
 <nav>
 
+
     <h2>Smart Bug Tracker</h2>
 
-    <div>
+   <div>
 
+    {% if request.path != "/" %}
         <a href="/">Home</a>
+    {% endif %}
 
+    {% if request.path != "/admin" %}
+        <a href="/admin">Admin Dashboard</a>
+    {% endif %}
+
+    {% if request.path != "/admin/bugs" %}
+        <a href="/admin/bugs">All Bugs</a>
+    {% endif %}
+
+    {% if request.path != "/create_bug" %}
         <a href="/create_bug">Create Bug</a>
+    {% endif %}
 
-        <a href="/logout">Logout</a>
+    {% if request.path != "/profile" %}
+        <a href="/profile">Profile</a>
+    {% endif %}
 
-    </div>
+    <a href="/logout">Logout</a>
+
+</div>
 
 </nav>
 
