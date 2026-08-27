@@ -5,7 +5,8 @@
 
     <title>Dashboard - Smart Bug Tracker</title>
 
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
 
 </head>
 
@@ -17,13 +18,13 @@
 
     <div>
 
-      <a href="/">Home</a>
+        <a href="/">Home</a>
 
-<a href="/create_bug">Create Bug</a>
+        <a href="/create_bug">Create Bug</a>
 
-<a href="/profile">Profile</a>
+        <a href="/profile">Profile</a>
 
-<a href="/logout">Logout</a>
+        <a href="/logout">Logout</a>
 
     </div>
 
@@ -79,86 +80,248 @@
     </div>
 
 
-<!-- =========================
-     BUG LIST
-========================= -->
+    <!-- =========================
+         CURRENT ASSIGNED BUGS
+    ========================== -->
 
-<h2>My Bugs</h2>
+    <h2>Current Assigned Bugs</h2>
 
-{% if bugs %}
+    {% if assigned_bugs %}
 
-    {% for bug in bugs %}
+        {% for bug in assigned_bugs %}
 
-        <div class="card">
+            <div class="card">
 
-            <h3>{{ bug.Title }}</h3>
+                <h3>{{ bug.Title }}</h3>
 
-            <p>
-                <strong>Description:</strong>
-                {{ bug.Description }}
-            </p>
+                <p>
+                    <strong>Bug ID:</strong>
+                    {{ bug.BugID }}
+                </p>
 
-            <p>
-                <strong>Severity:</strong>
-                {{ bug.Severity }}
-            </p>
+                <p>
+                    <strong>Description:</strong>
+                    {{ bug.Description }}
+                </p>
 
-            <p>
-                <strong>Priority:</strong>
-                {{ bug.Priority }}
-            </p>
+                <p>
+                    <strong>Severity:</strong>
+                    {{ bug.Severity }}
+                </p>
 
-            <p>
-                <strong>Status:</strong>
-                {{ bug.Status }}
-            </p>
+                <p>
+                    <strong>Priority:</strong>
+                    {{ bug.Priority }}
+                </p>
 
-            <p>
-                <strong>Date Reported:</strong>
-                {{ bug.DateReported }}
-            </p>
+                <p>
+                    <strong>Status:</strong>
+                    {{ bug.Status }}
+                </p>
 
-
-            <!-- =========================
-                 BUG ACTIONS
-            ========================== -->
-
-            <div class="bug-actions">
-
-                <a
-                    href="{{ url_for('edit_bug', bug_id=bug.BugID) }}"
-                    class="bug-edit-button"
-                >
-                    Edit Bug
-                </a>
+                <p>
+                    <strong>Date Reported:</strong>
+                    {{ bug.DateReported }}
+                </p>
 
 
-                <form
-                    method="POST"
-                    action="{{ url_for('delete_bug', bug_id=bug.BugID) }}"
-                    onsubmit="return confirm('Are you sure you want to delete this bug?');"
-                >
+                <!-- =========================
+                     EMPLOYEE BUG ACTION
+                ========================== -->
 
-                    <button
-                        type="submit"
-                        class="bug-delete-button"
+                {% if bug.Status == "Assigned" %}
+
+                    <form
+                        method="POST"
+                        action="{{ url_for('complete_bug', bug_id=bug.BugID) }}"
                     >
-                        Delete Bug
-                    </button>
 
-                </form>
+                        <button type="submit">
+                            Report as Completed
+                        </button>
+
+                    </form>
+
+
+                {% elif bug.Status == "Awaiting Verification" %}
+
+                    <p>
+                        <strong>
+                            Waiting for administrator verification.
+                        </strong>
+                    </p>
+
+                {% endif %}
 
             </div>
 
-        </div>
+        {% endfor %}
 
-    {% endfor %}
 
-{% else %}
+    {% else %}
 
-    <p>You have not reported any bugs yet.</p>
+        <p>
+            You currently have no bugs assigned to you.
+        </p>
 
-{% endif %}
+    {% endif %}
+
+
+    <!-- =========================
+         MY REPORTED BUGS
+    ========================== -->
+
+    <h2>My Reported Bugs</h2>
+
+    {% if reported_bugs %}
+
+        {% for bug in reported_bugs %}
+
+            <div class="card">
+
+                <h3>{{ bug.Title }}</h3>
+
+                <p>
+                    <strong>Bug ID:</strong>
+                    {{ bug.BugID }}
+                </p>
+
+                <p>
+                    <strong>Description:</strong>
+                    {{ bug.Description }}
+                </p>
+
+                <p>
+                    <strong>Severity:</strong>
+                    {{ bug.Severity }}
+                </p>
+
+                <p>
+                    <strong>Priority:</strong>
+                    {{ bug.Priority }}
+                </p>
+
+                <p>
+                    <strong>Status:</strong>
+                    {{ bug.Status }}
+                </p>
+
+                <p>
+                    <strong>Date Reported:</strong>
+                    {{ bug.DateReported }}
+                </p>
+
+
+                <!-- =========================
+                     BUG ACTIONS
+                ========================== -->
+
+                <div class="bug-actions">
+
+                    <a
+                        href="{{ url_for('edit_bug', bug_id=bug.BugID) }}"
+                        class="bug-edit-button"
+                    >
+                        Edit Bug
+                    </a>
+
+
+                    <form
+                        method="POST"
+                        action="{{ url_for('delete_bug', bug_id=bug.BugID) }}"
+                        onsubmit="return confirm('Are you sure you want to delete this bug?');"
+                    >
+
+                        <button
+                            type="submit"
+                            class="bug-delete-button"
+                        >
+                            Delete Bug
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        {% endfor %}
+
+
+    {% else %}
+
+        <p>
+            You have not reported any active bugs.
+        </p>
+
+    {% endif %}
+
+
+    <!-- =========================
+         RESOLVED / COMPLETED WORK
+    ========================== -->
+
+    <h2>Resolved / Completed Work</h2>
+
+    {% if completed_bugs %}
+
+        {% for bug in completed_bugs %}
+
+            <div class="card">
+
+                <h3>{{ bug.Title }}</h3>
+
+                <p>
+                    <strong>Bug ID:</strong>
+                    {{ bug.BugID }}
+                </p>
+
+                <p>
+                    <strong>Description:</strong>
+                    {{ bug.Description }}
+                </p>
+
+                <p>
+                    <strong>Severity:</strong>
+                    {{ bug.Severity }}
+                </p>
+
+                <p>
+                    <strong>Priority:</strong>
+                    {{ bug.Priority }}
+                </p>
+
+                <p>
+                    <strong>Status:</strong>
+                    {{ bug.Status }}
+                </p>
+
+                <p>
+                    <strong>Date Reported:</strong>
+                    {{ bug.DateReported }}
+                </p>
+
+                <p>
+                    <strong>Completed By:</strong>
+                    You
+                </p>
+
+            </div>
+
+        {% endfor %}
+
+
+    {% else %}
+
+        <p>
+            You have not completed any bugs yet.
+        </p>
+
+    {% endif %}
+
+
+</div>
+
 </body>
 
 </html>

@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-
+ 
 <head>
 
     <meta charset="UTF-8">
@@ -18,7 +18,7 @@
 <body class="home-page">
 
 
-<!-- =========================
+<!--=========================
      NAVIGATION
 ========================= -->
 
@@ -38,10 +38,6 @@
 
             <a href="/logout">Logout</a>
 
-            <a href="/admin/bugs">All Bugs</a>
-
-            <a href="/admin">Admin Panel</a>
-
         {% else %}
 
             <a href="/login">Login</a>
@@ -50,14 +46,22 @@
 
         {% endif %}
 
+        {% if session.get("user_role") == "Admin" %}
+
+    <a href="/admin">Admin Dashboard</a>
+
+    <a href="/admin/bugs">All Bugs</a>
+
+{% endif %}
+
     </div>
 
 </nav>
 
 
-<!-- =========================
+<!--=========================
      HERO SECTION
-========================= -->
+=========================-->
 
 <section class="hero">
 

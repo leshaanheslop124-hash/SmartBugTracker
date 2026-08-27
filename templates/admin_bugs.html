@@ -18,52 +18,72 @@
 
 <body>
 
+
+<!-- =========================
+     NAVIGATION
+========================= -->
+
 <nav>
 
     <h2>Smart Bug Tracker</h2>
-<div>
 
-    {% if request.path != "/" %}
-        <a href="/">Home</a>
-    {% endif %}
+    <div>
 
-    {% if request.path != "/admin" %}
-        <a href="/admin">Admin Dashboard</a>
-    {% endif %}
+        {% if request.path != "/" %}
+            <a href="/">Home</a>
+        {% endif %}
 
-    {% if request.path != "/admin/bugs" %}
-        <a href="/admin/bugs">All Bugs</a>
-    {% endif %}
+        {% if request.path != "/admin" %}
+            <a href="/admin">Admin Dashboard</a>
+        {% endif %}
 
-    {% if request.path != "/create_bug" %}
-        <a href="/create_bug">Create Bug</a>
-    {% endif %}
+        {% if request.path != "/admin/bugs" %}
+            <a href="/admin/bugs">All Bugs</a>
+        {% endif %}
 
-    {% if request.path != "/profile" %}
-        <a href="/profile">Profile</a>
-    {% endif %}
+        {% if request.path != "/create_bug" %}
+            <a href="/create_bug">Create Bug</a>
+        {% endif %}
 
-    <a href="/logout">Logout</a>
+        {% if request.path != "/profile" %}
+            <a href="/profile">Profile</a>
+        {% endif %}
 
-</div>
+        <a href="/logout">Logout</a>
+
+    </div>
 
 </nav>
 
 
 <div class="container">
 
+
+    <!-- =========================
+         PAGE TITLE
+    ========================== -->
+
     <h1>All Reported Bugs</h1>
 
     <p>
-        Administrator view of all bugs reported in the system.
+        Administrator view of all active bugs reported in the system.
     </p>
 
+
+    <!-- =========================
+         BUG LIST
+    ========================== -->
 
     {% if bugs %}
 
         {% for bug in bugs %}
 
             <div class="card">
+
+
+                <!-- =========================
+                     BUG INFORMATION
+                ========================== -->
 
                 <h3>
                     {{ bug.Title }}
@@ -106,40 +126,223 @@
                 </p>
 
 
+                <!-- =========================
+                     REPORTED BY
+                ========================== -->
+
                 <p>
+
                     <strong>Reported By:</strong>
 
-                    {{ bug.user.FirstName }}
-                    {{ bug.user.LastName }}
+                    {{ bug.reporter.FirstName }}
+                    {{ bug.reporter.LastName }}
 
                     —
-                    {{ bug.user.Email }}
+                    {{ bug.reporter.Email }}
 
                 </p>
 
 
+                <!-- =========================
+                     PROJECT
+                ========================== -->
+
                 <p>
+
                     <strong>Project:</strong>
 
                     {% if bug.project %}
+
                         {{ bug.project.ProjectName }}
+
                     {% else %}
+
                         No project
+
                     {% endif %}
 
                 </p>
+
+
+                <!-- =========================
+                     ASSIGNED EMPLOYEE
+                ========================== -->
+
+                <p>
+
+                    <strong>Assigned To:</strong>
+
+                    {% if bug.assigned_employee %}
+
+                        {{ bug.assigned_employee.FirstName }}
+                        {{ bug.assigned_employee.LastName }}
+
+                        —
+                        {{ bug.assigned_employee.Email }}
+
+                    {% else %}
+
+                        <span>
+                            Not assigned
+                        </span>
+
+                    {% endif %}
+
+                </p>
+
+
+                <!-- =========================
+                     ASSIGN BUG
+                ========================== -->
+
+                {% if bug.Status != "Awaiting Verification" %}
+
+                    <h4>
+                        Assign Bug
+                    </h4>
+
+
+                    <form
+                        method="POST"
+                        action="{{ url_for(
+                            'assign_bug',
+                            bug_id=bug.BugID
+                        ) }}"
+                    >
+
+                        <select
+                            name="assigned_employee_id"
+                            required
+                        >
+
+                            <option value="">
+                                Select Employee
+                            </option>
+
+
+                            {% for employee in employees %}
+
+                                <option
+                                    value="{{ employee.UserID }}"
+
+                                    {% if bug.AssignedToUserID == employee.UserID %}
+                                        selected
+                                    {% endif %}
+                                >
+
+                                    {{ employee.FirstName }}
+                                    {{ employee.LastName }}
+
+                                    —
+                                    {{ employee.Email }}
+
+                                </option>
+
+                            {% endfor %}
+
+                        </select>
+
+
+                        <button type="submit">
+                            Assign Bug
+                        </button>
+
+                    </form>
+
+                {% endif %}
+
+
+                <!-- =========================
+                     ADMIN VERIFICATION
+                ========================== -->
+
+                {% if bug.Status == "Awaiting Verification" %}
+
+                    <hr>
+
+
+                    <h4>
+                        Administrator Verification
+                    </h4>
+
+
+                    <p>
+                        The employee has reported this bug as completed.
+                        Please check that the issue has actually been fixed
+                        before closing the bug.
+                    </p>
+
+
+                    <div class="bug-actions">
+
+
+                        <!-- =========================
+                             APPROVE & CLOSE
+                        ========================== -->
+
+                        <form
+                            method="POST"
+                            action="{{ url_for(
+                                'verify_bug',
+                                bug_id=bug.BugID
+                            ) }}"
+                        >
+
+                            <input
+                                type="hidden"
+                                name="action"
+                                value="approve"
+                            >
+
+                            <button type="submit">
+                                Approve & Close
+                            </button>
+
+                        </form>
+
+
+                        <!-- =========================
+                             REJECT & SEND BACK
+                        ========================== -->
+
+                        <form
+                            method="POST"
+                            action="{{ url_for(
+                                'verify_bug',
+                                bug_id=bug.BugID
+                            ) }}"
+                        >
+
+                            <input
+                                type="hidden"
+                                name="action"
+                                value="reject"
+                            >
+
+                            <button type="submit">
+                                Reject & Send Back
+                            </button>
+
+                        </form>
+
+                    </div>
+
+                {% endif %}
+
 
             </div>
 
         {% endfor %}
 
+
     {% else %}
 
         <p>
-            There are currently no bugs in the system.
+            There are currently no active bugs in the system.
         </p>
 
     {% endif %}
+
 
 </div>
 
