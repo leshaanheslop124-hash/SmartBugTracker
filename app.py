@@ -28,11 +28,20 @@ def admin_required():
     if "user_id" not in session:
         return redirect(url_for("login"))
 
-    if session.get("user_role") != "Admin":
+    user = User.query.get(session["user_id"])
+
+    if not user or not user.IsActive:
+        session.clear()
+        return redirect(url_for("login"))
+
+    if user.Role != "Admin":
         return redirect(url_for("dashboard"))
 
-    return None
+    # Keep session information up to date
+    session["user_role"] = user.Role
+    session["user_name"] = user.FirstName
 
+    return None
 
 # =========================
 # HOME
@@ -146,10 +155,19 @@ def dashboard():
     if "user_id" not in session:
         return redirect(url_for("login"))
 
-    if session.get("user_role") == "Admin":
+    user = User.query.get(session["user_id"])
+
+    if not user or not user.IsActive:
+        session.clear()
+        return redirect(url_for("login"))
+
+    if user.Role == "Admin":
+        session["user_role"] = "Admin"
         return redirect(url_for("admin"))
 
-    user_id = session["user_id"]
+    session["user_role"] = user.Role
+
+    user_id = user.UserID
 
 
     # =========================
@@ -664,39 +682,33 @@ def change_role(user_id):
     if access_check:
         return access_check
 
+    current_admin_id = session.get("user_id")
 
-    current_admin_id = session.get(
-        "user_id"
-    )
-
-
-    # Prevent admin from changing own role
-
+    # Prevent an administrator from changing their own role
     if user_id == current_admin_id:
         return redirect(url_for("admin"))
 
+    user = User.query.get_or_404(user_id)
 
-    user = User.query.get_or_404(
-        user_id
-    )
-
+    # =========================
+    # PROMOTE EMPLOYEE
+    # =========================
 
     if user.Role == "Employee":
 
         user.Role = "Admin"
 
+    # =========================
+    # DEMOTE ADMIN
+    # =========================
+
     elif user.Role == "Admin":
 
-        user.Role = "Employee"
-
-
+     
+       user.Role = "Employee"
     db.session.commit()
 
-
-    return redirect(
-        url_for("admin")
-    )
-
+    return redirect(url_for("admin"))
 
 # =========================
 # DISABLE / RESTORE USER
