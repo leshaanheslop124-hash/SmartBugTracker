@@ -596,7 +596,7 @@ def assign_bug(bug_id):
     return redirect(
         url_for("admin_bugs")
     )
-
+    
 
 # =========================
 # ADMIN VERIFY COMPLETED BUG
@@ -958,6 +958,90 @@ def edit_bug(bug_id):
         projects=projects
     )
 
+# =========================
+# ADMIN EDIT BUG
+# =========================
+
+@app.route("/admin/edit_bug/<int:bug_id>", methods=["GET", "POST"])
+def admin_edit_bug(bug_id):
+
+    access_check = admin_required()
+
+    if access_check:
+        return access_check
+
+    bug = Bug.query.get_or_404(bug_id)
+
+    projects = Project.query.all()
+
+    if request.method == "POST":
+
+        project_id = request.form["project_id"]
+        title = request.form["title"].strip()
+        description = request.form["description"].strip()
+        severity = request.form["severity"]
+
+        # =========================
+        # SMART PRIORITY SYSTEM
+        # =========================
+
+        description_lower = description.lower()
+
+        if severity == "Critical":
+
+            priority = "Critical"
+
+        elif severity == "High":
+
+            priority = "High"
+
+        elif severity == "Medium":
+
+            important_words = [
+                "crash",
+                "crashes",
+                "error",
+                "failure",
+                "failed",
+                "broken",
+                "security",
+                "login"
+            ]
+
+            if any(
+                word in description_lower
+                for word in important_words
+            ):
+                priority = "High"
+
+            else:
+                priority = "Medium"
+
+        else:
+
+            priority = "Low"
+
+        # =========================
+        # UPDATE BUG
+        # =========================
+
+        bug.ProjectID = project_id
+        bug.Title = title
+        bug.Description = description
+        bug.Severity = severity
+        bug.Priority = priority
+
+        db.session.commit()
+
+        return redirect(
+            url_for("admin_bugs")
+        )
+
+    return render_template(
+        "admin_edit_bug.html",
+        bug=bug,
+        projects=projects
+    )
 
 # =========================
 # EMPLOYEE REPORT BUG COMPLETED
