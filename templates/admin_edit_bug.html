@@ -176,21 +176,13 @@
                 Assigned
             </option>
 
-            <option value="In Progress"
-                {% if bug.Status == "In Progress" %}selected{% endif %}>
-                In Progress
-            </option>
 
             <option value="Awaiting Verification"
                 {% if bug.Status == "Awaiting Verification" %}selected{% endif %}>
                 Awaiting Verification
             </option>
 
-            <option value="Resolved"
-                {% if bug.Status == "Resolved" %}selected{% endif %}>
-                Resolved
-            </option>
-
+            
             <option value="Closed"
                 {% if bug.Status == "Closed" %}selected{% endif %}>
                 Closed

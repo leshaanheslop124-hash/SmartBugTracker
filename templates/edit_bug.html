@@ -5,7 +5,8 @@
 
     <meta charset="UTF-8">
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
 
     <title>Edit Bug - Smart Bug Tracker</title>
 
@@ -64,7 +65,9 @@
                         selected
                     {% endif %}
                 >
+
                     {{ project.ProjectName }}
+
                 </option>
 
             {% endfor %}
@@ -162,14 +165,9 @@
                 Open
             </option>
 
-            <option value="In Progress"
-                {% if bug.Status == "In Progress" %}selected{% endif %}>
-                In Progress
-            </option>
-
-            <option value="Resolved"
-                {% if bug.Status == "Resolved" %}selected{% endif %}>
-                Resolved
+            <option value="Assigned"
+                {% if bug.Status == "Assigned" %}selected{% endif %}>
+                Assigned
             </option>
 
         </select>
